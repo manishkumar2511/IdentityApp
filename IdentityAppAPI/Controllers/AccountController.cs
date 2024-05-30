@@ -2,6 +2,7 @@
 using IdentityAppAPI.Model;
 using IdentityAppAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,7 +72,7 @@ namespace IdentityAppAPI.Controllers
         {
             if (await CheckEmailExistsAsync(registerData.email))
             {
-                return BadRequest($"An Existing user using {registerData.email} plaese try again with another email");
+                return BadRequest($" {registerData.email} already exists plaese try with another email");
             }
             var userToAdd = new User
             { 
@@ -84,7 +85,8 @@ namespace IdentityAppAPI.Controllers
             };
             var  result=await _userManager.CreateAsync(userToAdd, registerData.password);
             if (!result.Succeeded) return BadRequest(result.Errors);
-            return Ok("Your account has been created");
+            var response = new { message = "Your account has been created." };
+            return Ok(new JsonResult(new {title="Account Created",message= "Your account has been created." }));
 
         }
 
