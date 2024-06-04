@@ -1,0 +1,34 @@
+/* Center the card vertically and horizontally */
+.vh-100 {
+    height: 100vh;
+  }
+  
+  .card {
+    border-radius: 10px;
+  }
+  
+  .input-group-prepend .input-group-text {
+    background-color: #f8f9fa;
+  }
+  
+  .form-control:focus {
+    box-shadow: none;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  /* Optional: Set a fixed width for the button to control its size */
+  .btn-success {
+    width: 150px; /* Adjust this value as needed */
+  }
+  .custom{
+    color: white;
+    background-color:darkcyan;
+    height: 50px;
+  }
+  li{
+    list-style: none;
+  }

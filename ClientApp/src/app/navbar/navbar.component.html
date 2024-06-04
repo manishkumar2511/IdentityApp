@@ -1,0 +1,42 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./assets/images/logo.png" alt="logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" routerLink="/" routerLInkActive="active">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/play">Play</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Game</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav" *ngIf="(accountService.user$|async)===null">
+                    <li class="nav-item">
+                        <a class="btn btn-custom-create mx-3" routerLink="/account/register"
+                            routerLInkActive="active">Create Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-custom-login" routerLink="/account/login" routerLInkActive="active">Login</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-end" *ngIf="(accountService.user$|async) as user">
+                    <a class="text-white" style="text-decoration: none; cursor: pointer;">
+                        welcome ,<span class="p text-warning">{{user.firstName|titlecase}} {{user.lastName}}</span>
+                    </a>
+                    <a class="btn btn-danger ms-2" (click)="logOut()">Logout</a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

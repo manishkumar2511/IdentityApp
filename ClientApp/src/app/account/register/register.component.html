@@ -1,0 +1,89 @@
+<div class="d-flex justify-content-center align-items-start vh-100">
+  <div class="card shadow-sm" style="width: 25rem;">
+    <div class="card-body">
+      <div class=" ">
+        <h5 class="card-title text-center ">Create Account</h5>
+      </div>
+      <form [formGroup]="registerForm" (ngSubmit)="register()" class="mt-4">
+        <div class="form-group mb-3">
+          <label for="firstName">First Name</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <input type="text" class="form-control" name="firstName" placeholder="Enter first name" formControlName="firstName"
+            [class.is-invalid]="submitted && registerForm.get('firstName')?.errors">
+            
+          </div>
+          <div>
+            <span class="text-danger" *ngIf="submitted && registerForm.get('firstName')?.hasError('required')">
+              First Name is required
+            </span>
+            <span class="text-danger" *ngIf="submitted && 
+            registerForm.get('firstName')?.hasError('minlength')|| registerForm.get('firstName')?.hasError('maxlength')">
+            First Name must be atleast 3 and maximum 15 character
+            </span>
+
+          </div>
+        </div>
+        <div class="form-group mb-3">
+          <label for="lastName">Last Name</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Enter last name" formControlName="lastName"
+            [class.is-invalid]="submitted && registerForm.get('lastName')?.errors">
+          </div>
+          <span class="text-danger" *ngIf="submitted && registerForm.get('lastName')?.hasError('required')">
+            Last Name is required
+          </span>
+          <span class="text-danger" *ngIf="submitted && 
+          registerForm.get('lastName')?.hasError('minlength')|| registerForm.get('lastName')?.hasError('maxlength')">
+          First Name must be atleast 3 and maximum 15 character
+          </span>
+        </div>
+        <div class="form-group mb-3">
+          <label for="email">Email</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+            </div>
+            <input type="email" class="form-control" placeholder="Enter email" formControlName="email"
+            [class.is-invalid]="submitted && registerForm.get('email')?.errors">
+          </div>
+          <span class="text-danger" *ngIf="submitted && registerForm.get('email')?.hasError('required')">
+            Email is required
+          </span>
+          <span class="text-danger" *ngIf="submitted && 
+          registerForm.get('email')?.hasError('minlength')|| registerForm.get('email')?.hasError('pattern')">
+          Invalid Email
+          </span>
+        </div>
+        <div class="form-group mb-3">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+            </div>
+            <input type="password" class="form-control" placeholder="Enter password" formControlName="password"
+            [class.is-invalid]="submitted && registerForm.get('password')?.errors">
+          </div>
+          <span class="text-danger" *ngIf="submitted && registerForm.get('password')?.hasError('required')">
+            password is required
+          </span>
+          <span class="text-danger" *ngIf="submitted && 
+          registerForm.get('password')?.hasError('minlength')|| registerForm.get('password')?.hasError('maxlength')">
+          Password must be atleast 6 and maximum 15 character
+          </span>
+        </div>
+        <div class="form-flotin" *ngIf="errorMessages.length>0" >
+          <app-validation-messages [errorMessages]="errorMessages"></app-validation-messages>
+        </div>
+        <div class="d-flex justify-content-center mb-2">
+          <button type="submit" class="btn btn-success">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

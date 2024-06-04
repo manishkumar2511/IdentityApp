@@ -1,0 +1,21 @@
+.navbar-brand img {
+    height: 40px;
+}
+.btn-custom-create {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    border-radius: 20px;
+}
+.btn-custom-login {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+    border-radius: 20px;
+}
+.navbar {
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.active{
+    color: #ff9f10 !important;
+}

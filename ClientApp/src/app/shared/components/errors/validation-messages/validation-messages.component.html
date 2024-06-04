@@ -1,0 +1,5 @@
+<ul  class="text-danger"*ngIf="errorMessages">
+    <li *ngFor="let error of errorMessages">
+        <i class="fas fa-exclamation-circle text-danger"></i> {{error}}
+    </li>
+</ul>
