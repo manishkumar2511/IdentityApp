@@ -184,6 +184,7 @@ namespace IdentityAppAPI.Controllers
 
         }
         [HttpPut("reset-password")]
+
         public async Task<IActionResult>ResetPasword(ResetPasswordDTO model)
         {
             if (string.IsNullOrEmpty(model.Email)) return BadRequest("invalid Username");
