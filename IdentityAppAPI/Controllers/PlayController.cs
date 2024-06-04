@@ -11,7 +11,7 @@ namespace IdentityAppAPI.Controllers
         [HttpGet("get-players")]
         public IActionResult GetPlayers()
         {
-            return Ok(new { message = "only authorized users can view players" });
+            return Ok(new { message = "Authorized users can view players" });
         }
     }
 }

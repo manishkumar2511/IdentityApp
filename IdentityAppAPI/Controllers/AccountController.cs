@@ -134,14 +134,20 @@ namespace IdentityAppAPI.Controllers
         [HttpPost("resend-email-confirmation-link/{email}")]
         public async Task<IActionResult>ResendEmailConfirmationLink(string email)
         {
-            if (string.IsNullOrEmpty(email)) return BadRequest("Invalid Email");
+            if (string.IsNullOrEmpty(email))
+                return BadRequest("Invalid Email");
             var user=await _userManager.FindByEmailAsync (email);
-            if (user.EmailConfirmed == true) return BadRequest("Email alredy confirmed , you can login now ");
+            if (user == null)
+                return BadRequest("User not found");
+
+
+            if (user.EmailConfirmed == true)
+                return BadRequest("Email alredy confirmed , you can login now ");
             try
             {
                 if(await  SendConfirmEmail(user))
                 {
-                    return Ok(new JsonResult(new { title = "Confirmation Link sent", message = "please confirm your Email" }));
+                    return Ok(new JsonResult(new { title = "Confirmation Link sent", message = "Email Confirmation Link sent Again" }));
                 }
                 return BadRequest("Something went worng,please contact admin");
 
@@ -158,13 +164,14 @@ namespace IdentityAppAPI.Controllers
         {
             if (string.IsNullOrEmpty(email)) return BadRequest("User not found!");
             var user=await _userManager.FindByEmailAsync(email);
+
             if (user == null) return BadRequest ("User not found!");
             if (user.EmailConfirmed == false) return BadRequest("Email alredy confirmed , you can login now ");
             try
             {
                 if(await SendForgetUsernameOrPassword(user))
                 {
-                    return Ok(new JsonResult(new { title = "Forget usrname or Password  Link sent on Your registered email", message = "please checck your Email" }));
+                    return Ok(new JsonResult(new {  message = "Forget usrname or Password  Link sent on Your registered email" }));
 
                 }
                 return BadRequest("Failed to send email please contact  admin");
@@ -176,7 +183,7 @@ namespace IdentityAppAPI.Controllers
             }
 
         }
-        [HttpPost("reset-password")]
+        [HttpPut("reset-password")]
         public async Task<IActionResult>ResetPasword(ResetPasswordDTO model)
         {
             if (string.IsNullOrEmpty(model.Email)) return BadRequest("invalid Username");
@@ -190,9 +197,9 @@ namespace IdentityAppAPI.Controllers
                 var result = await _userManager.ResetPasswordAsync(user, decodedToken,model.NewPassword);
                 if (result.Succeeded)
                 {
-                    return Ok(new JsonResult(new { title = "Password Reset success", message = "Your password has been  updated successfully"}));
+                    return Ok(new JsonResult(new { message = "Your password has been  updated successfully"}));
                 }
-                return BadRequest("Invalid Token!,Please try again");
+                return BadRequest("Invalid Token!,Please send reset link again");
 
             }
             catch (Exception)
