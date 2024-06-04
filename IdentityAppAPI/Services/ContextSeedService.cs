@@ -57,8 +57,8 @@ namespace IdentityAppAPI.Services
                     {
                         firstName = "manish",
                         lastName = "kumar",
-                        UserName = "admin@gmail.com",
-                        Email = "admin@gmail.com",
+                        UserName = SeedDataBase.AdminUserName,
+                        Email = SeedDataBase.AdminUserName,
                         EmailConfirmed = true,
                     };
                     var adminResult = await _userManager.CreateAsync(admin, "admin@123");

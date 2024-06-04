@@ -63,6 +63,10 @@ namespace IdentityAppAPI.Controllers
                 if (user.EmailConfirmed == false) return Unauthorized("Please Confirmed your Email");
 
                 var result = await _signInManager.CheckPasswordSignInAsync(user, loginData.password, false);
+                if (result.IsLockedOut)
+                {
+                    return Unauthorized(string.Format("Your Account has been blocked You should wait until {0} {UTC time ) to be able to login again", user.LockoutEnd));
+                }
                 if (!result.Succeeded)
                     return Unauthorized("Invalid UserName or Password");
 
