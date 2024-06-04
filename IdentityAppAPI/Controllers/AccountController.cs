@@ -49,7 +49,7 @@ namespace IdentityAppAPI.Controllers
         public async Task<ActionResult<UserDTO>> RefreshUserToken()
         {
             var user=await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.Name)?.Value);
-            return CreateApplicationUserDto(user);
+            return await CreateApplicationUserDtoAsync(user);
         }
 
         [HttpPost("login")]
@@ -66,7 +66,7 @@ namespace IdentityAppAPI.Controllers
                 if (!result.Succeeded)
                     return Unauthorized("Invalid UserName or Password");
 
-                var userDto = CreateApplicationUserDto(user);
+                var userDto = CreateApplicationUserDtoAsync(user);
                 return Ok(userDto);
             }
             catch (Exception ex)
@@ -181,10 +181,8 @@ namespace IdentityAppAPI.Controllers
             {
                 return BadRequest("Somthing went worng contact admin");
             }
-
         }
         [HttpPut("reset-password")]
-
         public async Task<IActionResult>ResetPasword(ResetPasswordDTO model)
         {
             if (string.IsNullOrEmpty(model.Email)) return BadRequest("invalid Username");
@@ -211,13 +209,13 @@ namespace IdentityAppAPI.Controllers
 
         }
 
-        private UserDTO CreateApplicationUserDto(User user)
+        private async Task<UserDTO> CreateApplicationUserDtoAsync(User user)
         {
             return new UserDTO
             {
                 firstName = user.firstName,
                 lastName = user.lastName,
-                JWT = _jwtService.CreateJWT(user)
+                JWT = await _jwtService.CreateJWT(user)
             };
         }
         private async Task<bool> CheckEmailExistsAsync(string email)

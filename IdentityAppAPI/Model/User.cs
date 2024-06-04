@@ -6,6 +6,8 @@ namespace IdentityAppAPI.Model
 {
     public class User:IdentityUser
     {
+        internal string FirstName;
+
         [Required]
         public string firstName { get; set; }
         [Required]

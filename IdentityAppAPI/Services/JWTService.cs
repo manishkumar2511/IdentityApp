@@ -6,6 +6,9 @@ using System.Security.Claims;
 using System.Text;
 using System;
 using IdentityAppAPI.Model;
+using Microsoft.AspNetCore.Identity;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace IdentityAppAPI.Services
 {
@@ -13,13 +16,14 @@ namespace IdentityAppAPI.Services
     {
         private readonly IConfiguration _config;
         private readonly SymmetricSecurityKey _jwtKey;
+        private readonly UserManager<User> _userManager;
 
-        public JWTService(IConfiguration config)
+        public JWTService(IConfiguration config ,UserManager<User> userManager)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:key"]));
         }
-        public string CreateJWT(User user)
+        public async Task<string>CreateJWT(User user)
         {
             var userClaims = new List<Claim>
             {
@@ -27,6 +31,8 @@ namespace IdentityAppAPI.Services
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.firstName)
             };
+            var roles=await _userManager.GetRolesAsync(user);
+            userClaims.AddRange(roles.Select(role=> new Claim(ClaimTypes.Role, role)));
             var creadentials = new SigningCredentials(_jwtKey, SecurityAlgorithms.HmacSha256Signature);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
