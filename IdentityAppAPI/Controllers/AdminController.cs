@@ -61,16 +61,45 @@ namespace IdentityAppAPI.Controllers
             return Ok(memberList);
         }
         [HttpPut("lock-member/id")]
-        public async Task<IActionResult>LockMember(string id)
+        public async Task<IActionResult> LockMember(string id)
         {
-            var user= await  _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null) return BadRequest("User not found ");
             if (IsAdminUserId(user.Id)) return BadRequest(SeedDataBase.SuperAdminChangeNotAllowed);
 
-            await _userManager.SetLockoutEndDateAsync(user,DateTime.UtcNow.AddDays(1));
+            await _userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddDays(1));
             return NoContent();
         }
-        private  bool IsAdminUserId(string userId)
+      
+        [HttpPut("unlock-member/id")]
+        public async Task<IActionResult> UnLockMember(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return BadRequest("User not found ");
+            if (IsAdminUserId(user.Id)) return BadRequest(SeedDataBase.SuperAdminChangeNotAllowed);
+
+            await _userManager.SetLockoutEndDateAsync(user, null);
+            return NoContent();
+        }
+
+        [HttpDelete("delete-member/id")]
+        public async Task<IActionResult> DeleteMember(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return BadRequest("User not found ");
+            if (IsAdminUserId(user.Id)) return BadRequest(SeedDataBase.SuperAdminChangeNotAllowed);
+
+            await _userManager.DeleteAsync(user);
+            return NoContent();
+        }
+
+        [HttpGet("get-application-roles")]
+        public async Task<IActionResult> GetApplicationRoles()
+        {
+            var roles = await _roleManager.Roles.Select(x => x.Name).ToListAsync();
+            return Ok(roles);
+        }
+        private bool IsAdminUserId(string userId)
         {
             return _userManager.FindByIdAsync(userId).GetAwaiter().GetResult().UserName.Equals(SeedDataBase.AdminUserName);
         }
