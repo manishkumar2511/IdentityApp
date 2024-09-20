@@ -49,6 +49,7 @@ export class SendEmailComponent implements OnInit {
     });
   }
   sendEmail(){
+    debugger
     this.submitted=true;
     this.errorMessages=[];
     if(this.emailForm.valid && this.mode){

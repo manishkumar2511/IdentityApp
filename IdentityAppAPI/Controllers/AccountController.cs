@@ -53,25 +53,13 @@ namespace IdentityAppAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDTO loginData) 
+        public IActionResult Login(string returnUrl = "/")
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(loginData.userName);
-                if (user == null)
-                    return Unauthorized("Invalid UserName or Password");
-                if (user.EmailConfirmed == false) return Unauthorized("Please Confirmed your Email");
-
-                var result = await _signInManager.CheckPasswordSignInAsync(user, loginData.password, false);
-                if (result.IsLockedOut)
-                {
-                    return Unauthorized(string.Format("Your Account has been blocked You should wait until {0} {UTC time ) to be able to login again", user.LockoutEnd));
-                }
-                if (!result.Succeeded)
-                    return Unauthorized("Invalid UserName or Password");
-
-                var userDto = CreateApplicationUserDtoAsync(user);
-                return Ok(userDto);
+                var ssoLoginUrl = $"https://localhost:7047/Account/Login?returnUrl={Uri.EscapeDataString(returnUrl)}";
+                _logger.LogInformation("Redirecting to SSO login: {SSOLoginUrl}", ssoLoginUrl);
+                return Redirect(ssoLoginUrl);
             }
             catch (Exception ex)
             {
@@ -79,6 +67,39 @@ namespace IdentityAppAPI.Controllers
                 return BadRequest("An error occurred during login. Please try again.");
             }
         }
+
+        [HttpGet("authenticate")]
+        public async Task<IActionResult> AuthenticateWithToken(string token)
+        {
+            try
+            {
+                // Validate the token
+                var userClaims = _jwtService.ValidateToken(token);
+                if (userClaims == null)
+                {
+                    _logger.LogWarning("Invalid token received.");
+                    return Unauthorized("Invalid token.");
+                }
+
+                var userName = userClaims.FindFirst(ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByNameAsync(userName);
+                if (user == null)
+                {
+                    _logger.LogWarning("User not found: {UserName}", userName);
+                    return Unauthorized("User not found.");
+                }
+
+                // Create a new JWT for the original portal
+                var newJwt = _jwtService.CreateJWT(user);
+                return Ok(new { Token = newJwt });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred during token authentication.");
+                return BadRequest("An error occurred during token authentication.");
+            }
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult>Register(RegisterDTO registerData)
         {

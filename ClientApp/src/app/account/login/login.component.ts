@@ -28,7 +28,6 @@ export class LoginComponent {
     this.accountService.user$.pipe(take(1)).subscribe({
       next: (user: User | null) => {
         if (user) {
-          debugger
           this.router.navigateByUrl('/');
         }
         else {

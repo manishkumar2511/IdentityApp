@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/components/errors/not-found/not-found.component';
 import { PlayComponent } from './play/play.component';
 import { AuthorizationGuard } from './shared/guards/authorization.guard';
+import { RxjsLearningComponent } from './rxjs-learning/rxjs-learning.component';
 
 const routes: Routes = [
   {path:'', component:HomeComponent},
@@ -20,6 +21,7 @@ const routes: Routes = [
   //Implementing lazy loading 
   {path:'account',loadChildren:() => import('./account/account.module').then(module =>module.AccountModule)},
   {path:'not-found', component:NotFoundComponent},
+  {path:'rsjx-learning', component:RxjsLearningComponent},
   {path:'**', component:NotFoundComponent, pathMatch:'full'}
 ];
 

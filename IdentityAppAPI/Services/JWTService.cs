@@ -5,10 +5,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System;
-using IdentityAppAPI.Model;
-using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityAppAPI.Model;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityAppAPI.Services
 {
@@ -18,12 +18,14 @@ namespace IdentityAppAPI.Services
         private readonly SymmetricSecurityKey _jwtKey;
         private readonly UserManager<User> _userManager;
 
-        public JWTService(IConfiguration config ,UserManager<User> userManager)
+        public JWTService(IConfiguration config, UserManager<User> userManager)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:key"]));
+            _userManager = userManager;
         }
-        public async Task<string>CreateJWT(User user)
+
+        public async Task<string> CreateJWT(User user)
         {
             var userClaims = new List<Claim>
             {
@@ -31,19 +33,45 @@ namespace IdentityAppAPI.Services
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.firstName)
             };
-            var roles=await _userManager.GetRolesAsync(user);
-            userClaims.AddRange(roles.Select(role=> new Claim(ClaimTypes.Role, role)));
-            var creadentials = new SigningCredentials(_jwtKey, SecurityAlgorithms.HmacSha256Signature);
+
+            var credentials = new SigningCredentials(_jwtKey, SecurityAlgorithms.HmacSha256Signature);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(userClaims),
                 Expires = DateTime.UtcNow.AddDays(int.Parse(_config["JWT:ExpiresInMinutes"])),
-                SigningCredentials = creadentials,
+                SigningCredentials = credentials,
                 Issuer = _config["JWT:Issuer"]
             };
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwt = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(jwt);
         }
+
+        public ClaimsPrincipal ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _config["JWT:Issuer"],
+                    ValidAudience = _config["JWT:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"])),  
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                return principal;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 }

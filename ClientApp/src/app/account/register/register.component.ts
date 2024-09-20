@@ -17,6 +17,7 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   submitted = false;
   errorMessages: string[] = [];
+  isLoading = false;
 
   constructor(
     private accountService: AccountService,
@@ -49,13 +50,15 @@ export class RegisterComponent implements OnInit {
 
   register() {
     this.submitted = true;
-    this.errorMessages=[]
+    this.errorMessages=[];
+    this.isLoading = true;
    // if (this.registerForm.valid) {
       this.accountService.register(this.registerForm.value).subscribe({
         next: (response:any) => {
           console.log(response.value.message);
           this.toster.success(response.value.message);
           this.router.navigateByUrl('/account/login');
+          this.isLoading = false;
 
         },
         error: (error) => {
@@ -69,6 +72,7 @@ export class RegisterComponent implements OnInit {
           else{
             this.errorMessages.push(error.error)
           }
+          this.isLoading = false;
         }
       });
     }

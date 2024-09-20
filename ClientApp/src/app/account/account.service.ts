@@ -88,4 +88,13 @@ resetPassword(model:ResetPassword){
     this.userSource.next(null);
     this.router.navigateByUrl('/');
   }
+ 
+  // Update this method to perform a redirect to your SSO login page
+// Redirect to your SSO MVC controller login action
+AuthLogin() {
+  const returnUrl = encodeURIComponent(window.location.href); // The current page URL
+  window.location.href = `https://localhost:7047/Account/Login?returnUrl=${returnUrl}`;
+}
+
+
 }
