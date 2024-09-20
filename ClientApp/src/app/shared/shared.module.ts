@@ -5,18 +5,22 @@ import { ValidationMessagesComponent } from './components/errors/validation-mess
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
+import { LoaderComponent } from './components/loader/loader.component';
+
 
 
 
 @NgModule({
   declarations: [
     NotFoundComponent,
-    ValidationMessagesComponent
+    ValidationMessagesComponent,
+    LoaderComponent,
+    
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }

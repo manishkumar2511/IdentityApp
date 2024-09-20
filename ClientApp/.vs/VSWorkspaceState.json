@@ -1,8 +1,15 @@
 {
   "ExpandedNodes": [
+    "",
     "\\src",
     "\\src\\app",
-    "\\src\\app\\account"
+    "\\src\\app\\account",
+    "\\src\\app\\account\\login",
+    "\\src\\app\\shared",
+    "\\src\\app\\shared\\interceptor",
+    "\\src\\app\\shared\\models",
+    "\\src\\environments"
   ],
+  "SelectedNode": "\\package.json",
   "PreviewInSolutionExplorer": false
 }
